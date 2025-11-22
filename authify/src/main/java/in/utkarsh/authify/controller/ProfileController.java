@@ -4,6 +4,7 @@ package in.utkarsh.authify.controller;
 import in.utkarsh.authify.Service.ProfileService;
 import in.utkarsh.authify.io.ProfileRequest;
 import in.utkarsh.authify.io.ProfileResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class ProfileController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ProfileResponse register(@RequestBody ProfileRequest request){
+    public ProfileResponse register(@Valid @RequestBody ProfileRequest request){
         ProfileResponse response = profileService.createProfile(request);
         // TODO : send welcome email
         return  response;
