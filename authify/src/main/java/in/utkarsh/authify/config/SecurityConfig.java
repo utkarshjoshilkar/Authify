@@ -29,14 +29,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final AppUserDetailsService appUserDetailsService;
+    private final AppUserDetailsService appUserDetailsService;  // take the user from the DB
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login","register","/send-reset-otp","/reset-password","/reset-password","/logout")
+                        .requestMatchers("/login","/register","/send-reset-otp","/reset-password","/reset-password","/logout")
                         .permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(AbstractHttpConfigurer::disable);

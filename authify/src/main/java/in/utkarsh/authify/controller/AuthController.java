@@ -30,18 +30,18 @@ public class AuthController {
 
         }catch(BadCredentialsException ex){
             Map<String , Object> error = new HashMap<>();
-            error.put("error",ture);
+            error.put("error",true);
             error.put("message","Email or password is incorrect");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }catch(DisabledException ex){
             Map<String , Object> error = new HashMap<>();
-            error.put("error",ture);
+            error.put("error",true);
             error.put("message","Account is disabled");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
 
         }catch(Exception ex){
             Map<String , Object> error = new HashMap<>();
-            error.put("error",ture);
+            error.put("error",true);
             error.put("message","Authentication Failed");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
