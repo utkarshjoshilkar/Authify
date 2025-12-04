@@ -2,17 +2,21 @@ package in.utkarsh.authify.controller;
 
 import in.utkarsh.authify.Service.AppUserDetailsService;
 import in.utkarsh.authify.io.AuthRequest;
+import in.utkarsh.authify.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,12 +26,22 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final AppUserDetailsService appUserDetailsService;
+    private final JwtUtil jwtUtil;
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request){
         try{
             authenticate(request.getEmail(),request.getPassword());
-
+            // create JWT token pass user  detail to create JWT token
+            final UserDetails userDetails = appUserDetailsService.loadUserByUsername(request.getEmail());
+            final String jwtToken = jwtUtil.generateToken(userDetails);
+            ResponseCookie cookie = ResponseCookie.from("jwt",jwtToken)
+                    .httpOnly(true)
+                    .path("/")
+                    .maxAge(Duration.ofDays(1))
+                    .sameSite("Strict")
+                    .build();
         }catch(BadCredentialsException ex){
             Map<String , Object> error = new HashMap<>();
             error.put("error",true);
